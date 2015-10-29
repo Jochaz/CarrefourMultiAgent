@@ -1,8 +1,12 @@
-﻿<Window x:Class="TPNote.MainWindow"
+﻿<Window x:Name="FrmPrinc" x:Class="TPNote.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
+        Title="Simulation de carrefour" Height="444" Width="422" FontWeight="Bold" Loaded="FrmPrinc_Loaded">
+    <Grid x:Name="GrdContent" HorizontalAlignment="Left" Height="414" VerticalAlignment="Top" Width="412" Margin="0,0,0,0">
+        <Grid.Background>
+            <ImageBrush ImageSource="Img/Route.png"/>
+        </Grid.Background>
     </Grid>
+
+
 </Window>

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace TPNote
 {
@@ -23,6 +24,20 @@ namespace TPNote
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void FrmPrinc_Loaded(object sender, RoutedEventArgs e)
+        {
+
+            DispatcherTimer dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += dispatcherTimer_Tick;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 15);
+            dispatcherTimer.Start();
+        }
+
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }
