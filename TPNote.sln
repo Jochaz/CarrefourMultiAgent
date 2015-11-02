@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPNote", "TPNote\TPNote.csproj", "{174E347E-1EAD-46A9-82B4-2ECEE58D1576}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAgentSystemPCL", "..\MultiAgentSystems\MultiAgentSystemPCL\MultiAgentSystemPCL.csproj", "{D57EEFE1-5F4B-421E-AAE2-6816907F2C6E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAgentSystemPCL", "MultiAgentSystemPCL\MultiAgentSystemPCL.csproj", "{D57EEFE1-5F4B-421E-AAE2-6816907F2C6E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

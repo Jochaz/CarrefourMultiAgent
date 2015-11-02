@@ -21,6 +21,7 @@ namespace TPNote
     /// </summary>
     public partial class MainWindow : Window
     {
+        private DispatcherTimer dispatcherTimer;
         public MainWindow()
         {
             InitializeComponent();
@@ -28,16 +29,74 @@ namespace TPNote
 
         private void FrmPrinc_Loaded(object sender, RoutedEventArgs e)
         {
-
-            DispatcherTimer dispatcherTimer = new DispatcherTimer();
+            ImageBrush ib = new ImageBrush();
+            ib.ImageSource = new BitmapImage(new Uri(@"..\..\Img\route.png", UriKind.Relative));
+            routeCanvas.Background = ib;
+            dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += dispatcherTimer_Tick;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 15);
-            dispatcherTimer.Start();
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+            
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            AvanceVoiture();
+        }
+
+        private void DrawVoiture()
+        {
+            //Line body = new Line();
+            //body.Stroke = Brushes.Black;
+            //body.X1 = 250;
+            //body.Y1 = 250;
+            //body.X2 = 0;
+            //body.Y2 = 0;
+
+            Rectangle body = new Rectangle();
+            body.Stroke = Brushes.Chocolate;
+            body.Fill = Brushes.Coral;
+            body.Width = 50;
+            body.Height = 40;
+            routeCanvas.Children.Add(body);
+            Canvas.SetLeft(body, 0);
+            Canvas.SetTop(body, 265);
+            
+        }
+
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            DrawVoiture();
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            dispatcherTimer.Start();
+        }
+
+        private void AvanceVoiture()
+        {
+            Rectangle body;
+            for (int i = 0; i <= routeCanvas.Children.Count - 1; i++)
+            {
+                if (routeCanvas.Children[i] is Rectangle)
+                {
+                    
+                    if (Canvas.GetLeft(routeCanvas.Children[i]) == 195)
+                    {
+                        body = (Rectangle)routeCanvas.Children[i];
+                        body.Width = 40;
+                        body.Height = 50;
+                        routeCanvas.Children[i] = body;
+                        Canvas.SetTop(routeCanvas.Children[i], Canvas.GetTop(routeCanvas.Children[i]) + 1);
+                    }
+                    else
+                    {
+                        Canvas.SetLeft(routeCanvas.Children[i], Canvas.GetLeft(routeCanvas.Children[i]) + 1);
+                    }
+                }
+            }
+            
         }
     }
 }
