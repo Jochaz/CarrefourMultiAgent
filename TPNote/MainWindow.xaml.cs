@@ -156,44 +156,61 @@ namespace TPNote
                 int left = voiture.CoordonneesApparition[0];
                 int top = voiture.CoordonneesApparition[1];
 
-                //si la voiture n'a pas encore tournée
-                if (!voiture.Turned)
-                {
-                    if (apparition == "top")
-                        voiture.CoordonneesApparition[1] += voiture.Vitesse;
-                    else if (apparition == "bot")
-                        voiture.CoordonneesApparition[1] -= voiture.Vitesse;
-                    else if (apparition == "left")
-                        voiture.CoordonneesApparition[0] += voiture.Vitesse;
-                    else if (apparition == "right")
-                        voiture.CoordonneesApparition[0] -= voiture.Vitesse;
 
-                    if ((apparition == "left" || apparition == "right") && (voiture.Direction != "right" || voiture.Direction != "left"))
-                    {
-                        if (voiture.Direction == "bot" && left == 300)
-                            voiture.tourner();
-                        else if (voiture.Direction == "top" && left == 370)
-                            voiture.tourner();
-                    }
-                    if ((apparition == "top" || apparition == "bot") && (voiture.Direction != "bot" || voiture.Direction != "top"))
-                    {
-                        if (voiture.Direction == "right" && top == 360)
-                            voiture.tourner();
-                        else if (voiture.Direction == "left" && top == 296)
-                            voiture.tourner();
-                    }
-                }
+                if (apparition == "left" && feuG.Fill == Brushes.Red && left == 214)
+                    voiture.Stopped = true;
+                else if (apparition == "right" && feuD.Fill == Brushes.Red && left == 424)
+                    voiture.Stopped = true;
+                else if (apparition == "bot" && feuB.Fill == Brushes.Red && top == 424)
+                    voiture.Stopped = true;
+                else if (apparition == "top" && feuH.Fill == Brushes.Red && top == 214)
+                    voiture.Stopped = true;
                 else
+                    voiture.Stopped = false;
+
+                //si la voiture n'a pas encore tournée
+                if (!voiture.Stopped)
                 {
-                    if (voiture.Direction == "right")
-                        voiture.CoordonneesApparition[0] += voiture.Vitesse;
-                    if (voiture.Direction == "left")
-                        voiture.CoordonneesApparition[0] -= voiture.Vitesse;
-                    if (voiture.Direction == "bot")
-                        voiture.CoordonneesApparition[1] += voiture.Vitesse;
-                    if (voiture.Direction == "top")
-                        voiture.CoordonneesApparition[1] -= voiture.Vitesse;
+                    if (!voiture.Turned)
+                    {
+                        if (apparition == "top")
+                            voiture.CoordonneesApparition[1] += voiture.Vitesse;
+                        else if (apparition == "bot")
+                            voiture.CoordonneesApparition[1] -= voiture.Vitesse;
+                        else if (apparition == "left")
+                            voiture.CoordonneesApparition[0] += voiture.Vitesse;
+                        else if (apparition == "right")
+                            voiture.CoordonneesApparition[0] -= voiture.Vitesse;
+
+                        if ((apparition == "left" || apparition == "right") && (voiture.Direction != "right" || voiture.Direction != "left"))
+                        {
+                            if (voiture.Direction == "bot" && left == 300)
+                                voiture.tourner();
+                            else if (voiture.Direction == "top" && left == 370)
+                                voiture.tourner();
+                        }
+                        if ((apparition == "top" || apparition == "bot") && (voiture.Direction != "bot" || voiture.Direction != "top"))
+                        {
+                            if (voiture.Direction == "right" && top == 360)
+                                voiture.tourner();
+                            else if (voiture.Direction == "left" && top == 296)
+                                voiture.tourner();
+                        }
+
+                    }
+                    else
+                    {
+                        if (voiture.Direction == "right")
+                            voiture.CoordonneesApparition[0] += voiture.Vitesse;
+                        if (voiture.Direction == "left")
+                            voiture.CoordonneesApparition[0] -= voiture.Vitesse;
+                        if (voiture.Direction == "bot")
+                            voiture.CoordonneesApparition[1] += voiture.Vitesse;
+                        if (voiture.Direction == "top")
+                            voiture.CoordonneesApparition[1] -= voiture.Vitesse;
+                    }
                 }
+
 
             }
         }
@@ -206,6 +223,21 @@ namespace TPNote
             feuD.Fill = Brushes.Red;
 
             feuTimer.Start();
+        }
+
+
+        private Boolean chercherDanger(VoitureAgent uneVoiture)
+        {
+            foreach (VoitureAgent voiture in voitureList)
+            {
+                if ((voiture != uneVoiture) && (voiture.Direction != uneVoiture.Direction) && (!uneVoiture.Stopped))
+                {
+                    
+                }
+
+            }
+
+            return true;
         }
         /*
             Rectangle body;
