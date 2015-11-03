@@ -6,8 +6,9 @@ using MultiAgentSystemPCL.TP;
 
 namespace MultiAgentSystemPCL
 {
-    //public delegate void RouteUpdated(VoitureAgent[] _voiture, List<BadZone> _obstacles);
-    class Route
+    public delegate void RouteUpdated(VoitureAgent[] _voiture, List<BadZone> _obstacles);
+    
+    public class Route
     {
         
         //public event RouteUpdated routeUpdatedEvent;
@@ -41,6 +42,14 @@ namespace MultiAgentSystemPCL
           //  {
             //    routeUpdatedEvent(VoitureList, obstacles);
           //  }
+        }
+
+        public void UpdateVoiture()
+        {
+            foreach (VoitureAgent voiture in VoitureList)
+            {
+                //voiture.Update(VoitureList, Obstacles)
+            }
         }
     }
 }

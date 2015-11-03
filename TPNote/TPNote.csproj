@@ -99,6 +99,12 @@
     <Resource Include="Img\FeuVert.png" />
     <Resource Include="Img\Route.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MultiAgentSystemPCL\MultiAgentSystemPCL.csproj">
+      <Project>{d57eefe1-5f4b-421e-aae2-6816907f2c6e}</Project>
+      <Name>MultiAgentSystemPCL</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
