@@ -13,7 +13,7 @@ namespace MultiAgentSystemPCL.TP
         dDroite
     }
 
-    class VoitureAgent
+    public class VoitureAgent
     {
         private double speedX;
         private double PosX;
