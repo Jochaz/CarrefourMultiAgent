@@ -29,6 +29,7 @@ namespace TPNote
         private Ellipse feuB;
         private Ellipse feuG;
         private Ellipse feuD;
+        private Boolean feuGActif;
         private int secondeFeu;
 
         public MainWindow()
@@ -69,39 +70,81 @@ namespace TPNote
         {
             secondeFeu++;
 
-            if (feuB.Fill == Brushes.GreenYellow && secondeFeu == 7)
+            if (secondeFeu == 7)
             {
-                feuB.Fill = Brushes.Orange;
-                feuH.Fill = Brushes.Orange;
+                if (!feuGActif)
+                {
+                    feuB.Fill = Brushes.Orange;
+                    feuH.Fill = Brushes.Orange;
+                }
+                else
+                {
+                    feuG.Fill = Brushes.Orange;
+                    feuD.Fill = Brushes.Orange;                  
+                }
             }
-            if (feuB.Fill == Brushes.Orange && secondeFeu == 10)
+            else if (secondeFeu == 10)
             {
-                feuB.Fill = Brushes.Red;
-                feuH.Fill = Brushes.Red;
+                if (!feuGActif)
+                {
+                    feuB.Fill = Brushes.Red;
+                    feuH.Fill = Brushes.Red;
+                }
+                else
+                {
+                    feuG.Fill = Brushes.Red;
+                    feuD.Fill = Brushes.Red;
+                }
             }
-            if (feuB.Fill == Brushes.Red && secondeFeu == 13)
+            else if (secondeFeu == 13)
             {
                 secondeFeu = 0;
-                feuG.Fill = Brushes.GreenYellow;
-                feuD.Fill = Brushes.GreenYellow;
+                feuGActif = !feuGActif;
+                if (feuGActif)
+                {
+                    feuG.Fill = Brushes.GreenYellow;
+                    feuD.Fill = Brushes.GreenYellow;
+                }
+                else
+                {
+                    feuH.Fill = Brushes.GreenYellow;
+                    feuB.Fill = Brushes.GreenYellow;
+                }
             }
+            
+            //if (feuB.Fill == Brushes.GreenYellow && secondeFeu == 7)
+            //{
+            //    feuB.Fill = Brushes.Orange;
+            //    feuH.Fill = Brushes.Orange;
+            //}
+            //if (feuB.Fill == Brushes.Orange && secondeFeu == 10)
+            //{
+            //    feuB.Fill = Brushes.Red;
+            //    feuH.Fill = Brushes.Red;
+            //}
+            //if (feuB.Fill == Brushes.Red && secondeFeu == 13)
+            //{
+            //    secondeFeu = 0;
+            //    feuG.Fill = Brushes.GreenYellow;
+            //    feuD.Fill = Brushes.GreenYellow;
+            //}
 
-            if (feuG.Fill == Brushes.GreenYellow && secondeFeu == 7)
-            {
-                feuG.Fill = Brushes.Orange;
-                feuD.Fill = Brushes.Orange;
-            }
-            if (feuG.Fill == Brushes.Orange && secondeFeu == 10)
-            {
-                feuG.Fill = Brushes.Red;
-                feuD.Fill = Brushes.Red;
-            }
-            if (feuB.Fill == Brushes.Red && secondeFeu == 13)
-            {
-                secondeFeu = 0;
-                feuH.Fill = Brushes.GreenYellow;
-                feuB.Fill = Brushes.GreenYellow;
-            }         
+            //if (feuG.Fill == Brushes.GreenYellow && secondeFeu == 7)
+            //{
+            //    feuG.Fill = Brushes.Orange;
+            //    feuD.Fill = Brushes.Orange;
+            //}
+            //if (feuG.Fill == Brushes.Orange && secondeFeu == 10)
+            //{
+            //    feuG.Fill = Brushes.Red;
+            //    feuD.Fill = Brushes.Red;
+            //}
+            //if (feuG.Fill == Brushes.Red && secondeFeu == 13)
+            //{
+            //    secondeFeu = 0;
+            //    feuH.Fill = Brushes.GreenYellow;
+            //    feuB.Fill = Brushes.GreenYellow;
+            //}         
         }
 
         private void FrmPrinc_Loaded(object sender, RoutedEventArgs e)
@@ -221,7 +264,7 @@ namespace TPNote
             feuH.Fill = Brushes.GreenYellow;
             feuG.Fill = Brushes.Red;
             feuD.Fill = Brushes.Red;
-
+            feuGActif = false;
             feuTimer.Start();
         }
 
