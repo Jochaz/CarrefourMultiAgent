@@ -8,7 +8,13 @@ namespace MultiAgentSystemPCL.TP
 
     public class VoitureAgent
     {
+        private Boolean stopped;
 
+        public Boolean Stopped
+        {
+            get { return stopped; }
+            set { stopped = value; }
+        }
         private Boolean turned;
 
         public Boolean Turned
@@ -90,8 +96,9 @@ namespace MultiAgentSystemPCL.TP
                 width = 60;
                 height = 40;
             }
-            vitesse = 2;
+            vitesse = 1;
             turned = false;
+            stopped = false;
 
         }
         private int[] rdmApparition()
