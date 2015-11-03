@@ -51,16 +51,46 @@ namespace TPNote
             //body.Y1 = 250;
             //body.X2 = 0;
             //body.Y2 = 0;
-
+            int[] tabCoordonnees = rdmApparition();
             Rectangle body = new Rectangle();
             body.Stroke = Brushes.Chocolate;
             body.Fill = Brushes.Coral;
             body.Width = 50;
             body.Height = 40;
             routeCanvas.Children.Add(body);
-            Canvas.SetLeft(body, 0);
-            Canvas.SetTop(body, 265);
-            
+            //Canvas.SetLeft(body, 260);
+            //Canvas.SetTop(body, 500);
+            Canvas.SetLeft(body, tabCoordonnees[0]);
+            Canvas.SetTop(body, tabCoordonnees[1]);
+        }
+
+        private int[] rdmApparition()
+        {
+            int value;
+            Random randomGenerator = new Random();
+            value = randomGenerator.Next(4);
+            int[] tabCoordonnees = new int[2];
+
+                if(value == 0){
+                    tabCoordonnees[0] = -50;
+                    tabCoordonnees[1] = 265;
+                }else if(value == 1){
+                    tabCoordonnees[0] = 500;
+                    tabCoordonnees[1] = 200;
+                }
+                else if (value == 2)
+                {
+                    tabCoordonnees[0] = 190;
+                    tabCoordonnees[1] = -50;
+                }
+                else if (value == 3)
+                {
+                    tabCoordonnees[0] = 260;
+                    tabCoordonnees[1] = 500;
+                }
+
+            return tabCoordonnees;
+
         }
 
 
