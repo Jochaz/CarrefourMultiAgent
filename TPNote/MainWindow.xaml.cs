@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using MultiAgentSystemPCL.TP;
 
 namespace TPNote
 {
@@ -21,6 +22,7 @@ namespace TPNote
     /// </summary>
     public partial class MainWindow : Window
     {
+        List<VoitureAgent> voitureList = null;
         private DispatcherTimer dispatcherTimer;
         public MainWindow()
         {
@@ -29,74 +31,44 @@ namespace TPNote
 
         private void FrmPrinc_Loaded(object sender, RoutedEventArgs e)
         {
+            voitureList = new List<VoitureAgent>();
             ImageBrush ib = new ImageBrush();
             ib.ImageSource = new BitmapImage(new Uri(@"..\..\Img\route.png", UriKind.Relative));
             routeCanvas.Background = ib;
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
-            
+            //voitureList.Add(new VoitureAgent);
+           // dispatcherTimer.Start();
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            AvanceVoiture();
+
+            updateVoitures();
+            drawVoitures();
         }
 
-        private void DrawVoiture()
+        private void DrawVoiture(VoitureAgent voiture)
         {
-            //Line body = new Line();
-            //body.Stroke = Brushes.Black;
-            //body.X1 = 250;
-            //body.Y1 = 250;
-            //body.X2 = 0;
-            //body.Y2 = 0;
-            int[] tabCoordonnees = rdmApparition();
+
             Rectangle body = new Rectangle();
             body.Stroke = Brushes.Chocolate;
             body.Fill = Brushes.Coral;
-            body.Width = 50;
-            body.Height = 40;
+            body.Width = voiture.Width;
+            body.Height = voiture.Height;
             routeCanvas.Children.Add(body);
-            //Canvas.SetLeft(body, 260);
-            //Canvas.SetTop(body, 500);
-            Canvas.SetLeft(body, tabCoordonnees[0]);
-            Canvas.SetTop(body, tabCoordonnees[1]);
+            Canvas.SetLeft(body, voiture.CoordonneesApparition[0]);
+            Canvas.SetTop(body, voiture.CoordonneesApparition[1]);
         }
-
-        private int[] rdmApparition()
-        {
-            int value;
-            Random randomGenerator = new Random();
-            value = randomGenerator.Next(4);
-            int[] tabCoordonnees = new int[2];
-
-                if(value == 0){
-                    tabCoordonnees[0] = -50;
-                    tabCoordonnees[1] = 265;
-                }else if(value == 1){
-                    tabCoordonnees[0] = 500;
-                    tabCoordonnees[1] = 200;
-                }
-                else if (value == 2)
-                {
-                    tabCoordonnees[0] = 190;
-                    tabCoordonnees[1] = -50;
-                }
-                else if (value == 3)
-                {
-                    tabCoordonnees[0] = 260;
-                    tabCoordonnees[1] = 500;
-                }
-
-            return tabCoordonnees;
-
-        }
-
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            DrawVoiture();
+
+            VoitureAgent uneVoiture = new VoitureAgent();
+            Console.WriteLine(uneVoiture.Direction);
+            voitureList.Add(uneVoiture);
+            DrawVoiture(uneVoiture);
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -104,14 +76,69 @@ namespace TPNote
             dispatcherTimer.Start();
         }
 
-        private void AvanceVoiture()
+        private void updateVoitures()
         {
+
+            foreach (VoitureAgent voiture in voitureList)
+            {
+
+                string apparition = voiture.apparitionToString();
+                int left = voiture.CoordonneesApparition[0];
+                int top = voiture.CoordonneesApparition[1];
+
+                //si la voiture n'a pas encore tournée
+                if (!voiture.Turned)
+                {
+                    if (apparition == "top")
+                        voiture.CoordonneesApparition[1] += voiture.Vitesse;
+                    else if (apparition == "bot")
+                        voiture.CoordonneesApparition[1] -= voiture.Vitesse;
+                    else if (apparition == "left")
+                        voiture.CoordonneesApparition[0] += voiture.Vitesse;
+                    else if (apparition == "right")
+                        voiture.CoordonneesApparition[0] -= voiture.Vitesse;
+
+                    if ((apparition == "left" || apparition == "right") && (voiture.Direction != "right" || voiture.Direction != "left"))
+                    {
+                        if (voiture.Direction == "bot" && left == 300)
+                            voiture.tourner();
+                        else if (voiture.Direction == "top" && left == 370)
+                            voiture.tourner();
+                    }
+                    if ((apparition == "top" || apparition == "bot") && (voiture.Direction != "bot" || voiture.Direction != "top"))
+                    {
+                        if (voiture.Direction == "right" && top == 360)
+                            voiture.tourner();
+                        else if (voiture.Direction == "left" && top == 296)
+                            voiture.tourner();
+                    }
+                }
+                else
+                {
+                    if(voiture.Direction == "right")
+                        voiture.CoordonneesApparition[0] += voiture.Vitesse;
+                    if(voiture.Direction == "left")
+                        voiture.CoordonneesApparition[0] -= voiture.Vitesse;
+                    if(voiture.Direction == "bot")
+                        voiture.CoordonneesApparition[1] += voiture.Vitesse;
+                    if(voiture.Direction == "top")
+                        voiture.CoordonneesApparition[1] -= voiture.Vitesse;
+                }
+
+            }
+
+
+ 
+
+
+            /*
+
             Rectangle body;
             for (int i = 0; i <= routeCanvas.Children.Count - 1; i++)
             {
                 if (routeCanvas.Children[i] is Rectangle)
                 {
-                    
+
                     if (Canvas.GetLeft(routeCanvas.Children[i]) == 195)
                     {
                         body = (Rectangle)routeCanvas.Children[i];
@@ -125,8 +152,35 @@ namespace TPNote
                         Canvas.SetLeft(routeCanvas.Children[i], Canvas.GetLeft(routeCanvas.Children[i]) + 1);
                     }
                 }
+            }*/
+
+        }
+        private void drawVoitures()
+        {
+            viderCanvas();
+
+            Rectangle body;
+            foreach(VoitureAgent voiture in voitureList){
+
+                body = new Rectangle();
+                body.Stroke = Brushes.Chocolate;
+                body.Fill = Brushes.Coral;
+                body.Width = voiture.Width;
+                body.Height = voiture.Height;
+                routeCanvas.Children.Add(body);
+                Canvas.SetLeft(body, voiture.CoordonneesApparition[0]);
+                Canvas.SetTop(body, voiture.CoordonneesApparition[1]);
+            } 
+        }
+
+        private void viderCanvas()
+        {
+
+            var rectangles = routeCanvas.Children.OfType<Rectangle>().ToList();
+            foreach (var rectangle in rectangles)
+            {
+                routeCanvas.Children.Remove(rectangle);
             }
-            
         }
     }
 }
