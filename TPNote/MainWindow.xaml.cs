@@ -269,11 +269,12 @@ namespace TPNote
         }
 
 
-        private Boolean chercherDanger(VoitureAgent uneVoiture)
+       /* private Boolean chercherDanger(VoitureAgent uneVoiture)
         {
             foreach (VoitureAgent voiture in voitureList)
             {
-                if ((voiture != uneVoiture) && (voiture.Direction != uneVoiture.Direction) && (!uneVoiture.Stopped))
+                if (voiture != uneVoiture){
+                    
                 {
                     
                 }
@@ -281,7 +282,7 @@ namespace TPNote
             }
 
             return true;
-        }
+        }*/
         /*
             Rectangle body;
             for (int i = 0; i <= routeCanvas.Children.Count - 1; i++)
