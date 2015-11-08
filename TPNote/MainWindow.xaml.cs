@@ -231,13 +231,13 @@ namespace TPNote
 
                     if (!voiture.Turned && !uneVoiture.Turned && !uneVoiture.Stopped)
                     {
-                        if (voiture.apparitionToString() == "left" && voiture.Direction == "top" && uneVoiture.apparitionToString() == "right" && distance < 80 && distance > -20 && left <= 369 && left >= 365)
+                        if (voiture.apparitionToString() == "left" && voiture.Direction == "top" && uneVoiture.apparitionToString() == "right" && distance < 100 && distance > -20 && left <= 369 && left >= 365)
                             return true;
-                        if (voiture.apparitionToString() == "right" && voiture.Direction == "bot" && uneVoiture.apparitionToString() == "left" && distance < 80 && distance > -20 && left <= 300 && left >= 296)
+                        if (voiture.apparitionToString() == "right" && voiture.Direction == "bot" && uneVoiture.apparitionToString() == "left" && distance < 100 && distance > -20 && left <= 300 && left >= 296)
                             return true;
-                        if (voiture.apparitionToString() == "bot" && voiture.Direction == "left" && uneVoiture.apparitionToString() == "top" && distance < 80 && distance > -20 && top <= 296 && top >= 292)
+                        if (voiture.apparitionToString() == "bot" && voiture.Direction == "left" && uneVoiture.apparitionToString() == "top" && distance < 100 && distance > -20 && top <= 296 && top >= 292)
                             return true;
-                        if (voiture.apparitionToString() == "top" && voiture.Direction == "right" && uneVoiture.apparitionToString() == "bot" && distance < 80 && distance > -20 && top <= 360 && top >= 356)
+                        if (voiture.apparitionToString() == "top" && voiture.Direction == "right" && uneVoiture.apparitionToString() == "bot" && distance < 100 && distance > -20 && top <= 360 && top >= 356)
                             return true;
                      
                     }
