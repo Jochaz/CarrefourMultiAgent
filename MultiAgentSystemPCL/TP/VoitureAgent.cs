@@ -198,14 +198,48 @@ namespace MultiAgentSystemPCL.TP
             width = height;
             height = temp;
 
-            if (direction == "left" && apparitionToString() == "bot" || apparitionToString() == "top")
-                coordonneesApparition[0] -= 15;
 
-            if (direction == "bot" && apparitionToString() == "right" || apparitionToString() == "left")
+            if (direction == "top" && apparitionToString() == "left")
+            {
+                coordonneesApparition[0] += 15;
+                coordonneesApparition[1] -= 25;
+            }
+            if (direction == "top" && apparitionToString() == "right")
+            {
+                //coordonneesApparition[0] += 25;
+                coordonneesApparition[1] -= 25;
+            }
+            if (direction == "bot" && (apparitionToString() == "right" || apparitionToString() == "left"))
+            {
+                //coordonneesApparition[0] += 25;
+                coordonneesApparition[1] += 15;
+            }
+            if (direction == "left" && apparitionToString() == "top")
+            {
+                coordonneesApparition[0] -= 25;
+                coordonneesApparition[1] += 15;
+            }
+            if (direction == "right" && apparitionToString() == "top")
+            {
+                coordonneesApparition[0] += 15;
+                coordonneesApparition[1] += 15;
+            }
+           /* if (direction == "bot" && apparitionToString() == "left")
+            {
+                //coordonneesApparition[0] += 25;
+                coordonneesApparition[1] += 15;
+            }
+            */
+            /* if (direction == "left" && (apparitionToString() == "bot" || apparitionToString() == "top"))
+                coordonneesApparition[0] += 15;
+            coordonneesApparition[1] -= 25;
+
+            if (direction == "bot" && (apparitionToString() == "right" || apparitionToString() == "left"))
                 coordonneesApparition[1] += 10; 
-
+            */
 
             turned = true;
+            
         }
 
     }
