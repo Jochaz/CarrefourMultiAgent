@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+
 namespace MultiAgentSystemPCL.TP
 {
 
@@ -54,7 +55,7 @@ namespace MultiAgentSystemPCL.TP
         }
 
         /**
-         * les coordonnées d'apparition du véhicule sur la route
+         * les coordonnées du véhicule sur la route
          * indice 0 : coordonnées left
          * indice 1 : coordonées top
          * indice 2 : correspondance top, bot, left ou right
@@ -80,21 +81,18 @@ namespace MultiAgentSystemPCL.TP
             coordonneesApparition = rdmApparition();
             direction = rdmDirection();
 
-            while (direction == apparitionToString())
-            {
-                direction = rdmDirection();
-            }
+
 
             if (apparitionToString() == "bot" || apparitionToString() == "top")
             {
-                width = 40;
-                height = 60;
+                width = 20;
+                height = 30;
 
             }
             else
             {
-                width = 60;
-                height = 40;
+                width = 30;
+                height = 20;
             }
             vitesse = 1;
             turned = false;
@@ -117,7 +115,7 @@ namespace MultiAgentSystemPCL.TP
             if (value == 0)
             {
                 tabCoordonnees[0] = -60;
-                tabCoordonnees[1] = 360;
+                tabCoordonnees[1] = 370;
                 tabCoordonnees[2] = 1;
             }
             else if (value == 1)
@@ -148,22 +146,29 @@ namespace MultiAgentSystemPCL.TP
             int value;
             Random randomGenerator = new Random();
             value = randomGenerator.Next(4);
+
+
+            while (value + 1 == coordonneesApparition[2])
+            {
+                value = randomGenerator.Next(4);
+            }
+
             string direction = "";
             if (value == 0)
             {
-                direction = "top";
+                direction = "left";
             }
             else if (value == 1)
             {
-                direction = "bot";
+                direction = "right";
             }
             else if (value == 2)
             {
-                direction = "left";
+                direction = "top";
             }
             else if (value == 3)
             {
-                direction = "right";
+                direction = "bot";
 
             }
             return direction;
@@ -192,6 +197,14 @@ namespace MultiAgentSystemPCL.TP
             temp = width;
             width = height;
             height = temp;
+
+            if (direction == "left" && apparitionToString() == "bot" || apparitionToString() == "top")
+                coordonneesApparition[0] -= 15;
+
+            if (direction == "bot" && apparitionToString() == "right" || apparitionToString() == "left")
+                coordonneesApparition[1] += 10; 
+
+
             turned = true;
         }
 
