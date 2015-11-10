@@ -128,25 +128,25 @@ namespace MultiAgentSystemPCL.TP
             if (value == 0)
             {
                 tabCoordonnees[0] = -60;
-                tabCoordonnees[1] = 385;
+                tabCoordonnees[1] = 455;
                 tabCoordonnees[2] = 1;
             }
             else if (value == 1)
             {
-                tabCoordonnees[0] = 700;
-                tabCoordonnees[1] = 290;
+                tabCoordonnees[0] = 850;
+                tabCoordonnees[1] = 380;
                 tabCoordonnees[2] = 2;
             }
             else if (value == 2)
             {
-                tabCoordonnees[0] = 290;
+                tabCoordonnees[0] = 380;
                 tabCoordonnees[1] = -60;
                 tabCoordonnees[2] = 3;
             }
             else if (value == 3)
             {
-                tabCoordonnees[0] = 385;
-                tabCoordonnees[1] = 700;
+                tabCoordonnees[0] = 455;
+                tabCoordonnees[1] = 850;
                 tabCoordonnees[2] = 4;
             }
 
@@ -238,16 +238,16 @@ namespace MultiAgentSystemPCL.TP
             int top = CoordonneesApparition[1];
             if ((apparition == "left" || apparition == "right") && (Direction != "right" || Direction != "left"))
             {
-                if (Direction == "bot" && left == 300)
+                if (Direction == "bot" && left == 370)
                     return true;
-                else if (Direction == "top" && left == 370)
+                else if (Direction == "top" && left == 440)
                     return true;
             }
             if ((apparition == "top" || apparition == "bot") && (Direction != "bot" || Direction != "top"))
             {
-                if (Direction == "right" && top == 370)
+                if (Direction == "right" && top == 440)
                     return true;
-                else if (Direction == "left" && top == 300)
+                else if (Direction == "left" && top == 370)
                     return true;
             }
             return false;
@@ -255,13 +255,13 @@ namespace MultiAgentSystemPCL.TP
 
         public Boolean sortieDuCarrefour()
         {
-            if(directionActuelle() == "left" && coordonneesApparition[0] < 244)
+            if(directionActuelle() == "left" && coordonneesApparition[0] < 314)
                 return true;
-            if (directionActuelle() == "right" && coordonneesApparition[0] > 424)
+            if (directionActuelle() == "right" && coordonneesApparition[0] > 494)
                 return true;
-            if (directionActuelle() == "bot" && coordonneesApparition[1] > 424)
+            if (directionActuelle() == "bot" && coordonneesApparition[1] > 494)
                 return true;
-            if (directionActuelle() == "top" && coordonneesApparition[1] < 244)
+            if (directionActuelle() == "top" && coordonneesApparition[1] < 314)
                 return true;
             return false;
         }
