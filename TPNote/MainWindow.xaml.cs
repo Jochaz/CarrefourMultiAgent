@@ -32,7 +32,7 @@ namespace TPNote
         private Boolean feuGActif;
         private int secondeFeu;
         private int secondeCanvas;
-        private int vitesse = 2;
+        private int vitesse = 1;
         Random randomGenerator = new Random();
         public MainWindow()
         {
@@ -50,10 +50,10 @@ namespace TPNote
             feuG = new Ellipse();
             feuH = new Ellipse();
 
-            PlaceLesFeux(feuB, 420, 425, "feuB");
-            PlaceLesFeux(feuH, 267, 257, "feuH");
-            PlaceLesFeux(feuG, 257, 420, "FeuG");
-            PlaceLesFeux(feuD, 425, 267, "feuD"); 
+            PlaceLesFeux(feuB, 490, 490, "feuB");
+            PlaceLesFeux(feuH, 347, 347, "feuH");
+            PlaceLesFeux(feuG, 337, 490, "FeuG");
+            PlaceLesFeux(feuD, 485, 344, "feuD"); 
         }
 
         private void PlaceLesFeux(Ellipse unFeu, int left, int top, string nomFeu)
@@ -139,15 +139,35 @@ namespace TPNote
 
             int apparition;
             secondeCanvas++;
-            if(secondeCanvas % 60 == 0){
+            if(secondeCanvas % 65 == 0){
                 apparition = randomGenerator.Next(4);
                 VoitureAgent uneVoiture = new VoitureAgent(apparition);
+
                 //Console.WriteLine(uneVoiture.Direction);
-                voitureList.Add(uneVoiture);
-                DrawVoiture(uneVoiture);
+                if (!bouchon(uneVoiture.apparitionToString()))
+                {
+                    voitureList.Add(uneVoiture);
+                    DrawVoiture(uneVoiture);
+                }
+                else
+                    Console.WriteLine("bouchon !!");
+
             }
             updateVoitures();
             drawVoitures();
+        }
+
+        private Boolean bouchon(string apparition)
+        {
+            int total = 0;
+            foreach (VoitureAgent uneVoiture in voitureList)
+            {
+                if (uneVoiture.apparitionToString() == apparition && !uneVoiture.sortieDuCarrefour())
+                    total++;
+            }
+
+            return (total >= 13 ? true : false);
+
         }
 
         private void DrawVoiture(VoitureAgent voiture)
@@ -199,17 +219,18 @@ namespace TPNote
             string apparition = voiture.apparitionToString();
             int left = voiture.CoordonneesApparition[0];
             int top = voiture.CoordonneesApparition[1];
-            voiture.Freine = 1;
+            //voiture.Freine = 1;
 
             foreach (VoitureAgent uneVoiture in voitureList)
             {
                 if (uneVoiture != voiture)
                 {
                     //on va déterminer si une voiture devant est arrêtée
-                    //if (uneVoiture.Stopped && !uneVoiture.Turned && uneVoiture.apparitionToString() == voiture.apparitionToString())
-                    if (uneVoiture.apparitionToString() == voiture.apparitionToString())
-                    {
 
+                    //if (uneVoiture.apparitionToString() == voiture.apparitionToString() && voiture.directionActuelle() == uneVoiture.directionActuelle())
+                    if (voiture.directionActuelle() == uneVoiture.directionActuelle())
+                    {
+                        /*
                         if (uneVoiture.apparitionToString() == "left")
                             distance = uneVoiture.CoordonneesApparition[0] - (voiture.CoordonneesApparition[0] + voiture.Width);
                         else if (uneVoiture.apparitionToString() == "right")
@@ -218,11 +239,24 @@ namespace TPNote
                             distance = voiture.CoordonneesApparition[1] - (uneVoiture.CoordonneesApparition[1] + uneVoiture.Height);
                         else if (uneVoiture.apparitionToString() == "top")
                             distance = uneVoiture.CoordonneesApparition[1] - (voiture.CoordonneesApparition[1] + voiture.Height);
+                        */
 
-                        if (distance > 0 && distance < 15)
+
+                        if (uneVoiture.directionActuelle() == "right")
+                            distance = uneVoiture.CoordonneesApparition[0] - (voiture.CoordonneesApparition[0] + voiture.Width);
+                        else if (uneVoiture.directionActuelle() == "left")
+                            distance = voiture.CoordonneesApparition[0] - (uneVoiture.CoordonneesApparition[0] + uneVoiture.Width);
+                        else if (uneVoiture.directionActuelle() == "top")
+                            distance = voiture.CoordonneesApparition[1] - (uneVoiture.CoordonneesApparition[1] + uneVoiture.Height);
+                        else if (uneVoiture.directionActuelle() == "bot")
+                            distance = uneVoiture.CoordonneesApparition[1] - (voiture.CoordonneesApparition[1] + voiture.Height);
+
+                        if (distance > 0 && distance < 7)
                         {
-                            return 3;
+                            return 4;
                         }
+                        else if (distance >= 7 && distance < 15)
+                            return 3;
                         else if (distance >= 15 && distance < 25)
                         {
                             return 2;
@@ -241,7 +275,7 @@ namespace TPNote
             string apparition = voiture.apparitionToString();
             int left = voiture.CoordonneesApparition[0];
             int top = voiture.CoordonneesApparition[1];
-            voiture.Freine = 1;
+            //voiture.Freine = 1;
             double left2 = voiture.CoordonneesApparition[0] + voiture.Width;
             double top2 =voiture.CoordonneesApparition[1] + voiture.Height;
 
@@ -253,16 +287,16 @@ namespace TPNote
             double _top2;
 
             // on vérifie si la voiture est au feu rouge qui la concerne
-            if (apparition == "left" && (feuG.Fill == Brushes.Red || feuG.Fill == Brushes.Orange) && left == 244)
+            if (apparition == "left" && (feuG.Fill == Brushes.Red || feuG.Fill == Brushes.Orange) && left >= 323 && left <= 340)
                 return true;
 
-            if (apparition == "right" && (feuD.Fill == Brushes.Red || feuD.Fill == Brushes.Orange) && left == 424)
+            if (apparition == "right" && (feuD.Fill == Brushes.Red || feuD.Fill == Brushes.Orange) && left >= 481 && left <= 495)
                 return true;
 
-            if (apparition == "bot" && (feuB.Fill == Brushes.Red || feuB.Fill == Brushes.Orange) && top == 424)
+            if (apparition == "bot" && (feuB.Fill == Brushes.Red || feuB.Fill == Brushes.Orange) && top >= 485 && top <= 499)
                 return true;
 
-            if (apparition == "top" && (feuH.Fill == Brushes.Red || feuH.Fill == Brushes.Orange) && top == 244)
+            if (apparition == "top" && (feuH.Fill == Brushes.Red || feuH.Fill == Brushes.Orange) && top >= 326 && top <= 341)
                 return true;
             //
 
@@ -305,13 +339,13 @@ namespace TPNote
                     //fonctionnel !!  if (!uneVoiture.Turned && !uneVoiture.Stopped)
 
                     
-                    if (voiture.apparitionToString() == "left" && voiture.Direction == "top" && uneVoiture.apparitionToString() == "right" && left == 370 && distance < 100 && distance > -40 && feuD.Fill == Brushes.GreenYellow)
+                    if (voiture.apparitionToString() == "left" && voiture.Direction == "top" && uneVoiture.apparitionToString() == "right" && voiture.timeToTurn() && distance < 50 && distance > 0 && feuD.Fill == Brushes.GreenYellow)
                             return true;
-                    if (voiture.apparitionToString() == "right" && voiture.Direction == "bot" && uneVoiture.apparitionToString() == "left" && left == 300 && distance < 100 && distance > -40 && feuG.Fill == Brushes.GreenYellow)
+                    if (voiture.apparitionToString() == "right" && voiture.Direction == "bot" && uneVoiture.apparitionToString() == "left" && voiture.timeToTurn() && distance < 50 && distance > 0 && feuG.Fill == Brushes.GreenYellow)
                             return true;
-                    if (voiture.apparitionToString() == "bot" && voiture.Direction == "left" && uneVoiture.apparitionToString() == "top" && top == 300 && distance < 100 && distance > -40 && feuH.Fill == Brushes.GreenYellow)
+                    if (voiture.apparitionToString() == "bot" && voiture.Direction == "left" && uneVoiture.apparitionToString() == "top" && voiture.timeToTurn() && distance < 50 && distance > 0 && feuH.Fill == Brushes.GreenYellow)
                             return true;
-                    if (voiture.apparitionToString() == "top" && voiture.Direction == "right" && uneVoiture.apparitionToString() == "bot" && top == 370 && distance < 100 && distance > -40 && feuB.Fill == Brushes.GreenYellow)
+                    if (voiture.apparitionToString() == "top" && voiture.Direction == "right" && uneVoiture.apparitionToString() == "bot" && voiture.timeToTurn() && distance < 50 && distance > 0 && feuB.Fill == Brushes.GreenYellow)
                             return true;
                     /*
                     if (voiture.apparitionToString() == "left" && voiture.Direction == "top" && uneVoiture.apparitionToString() == "right" && left == 370 && distance < 60 && distance > -40)
@@ -353,7 +387,7 @@ namespace TPNote
                         {
                             if (!(left2 < _left || left > _left2))
                             {
-                                if (distance < 5 && distance > 0)
+                                if (distance < 10 && distance > 0)
                                     return true;
                             }
                         }else{
@@ -363,9 +397,32 @@ namespace TPNote
                                     return true;
                             }
                         }
-                    
 
 
+                        /*if (uneVoiture.Turned && !voiture.Turned && voiture.Stopped)
+                        {
+                            if (voiture.directionActuelle() == "left" && voiture.Direction == "top" && voiture.Stopped)
+                            {
+                                if (top - _top2 < 10)
+                                    return false;
+                            }
+                            else if (voiture.directionActuelle() == "right" && voiture.Direction == "bot" && voiture.Stopped)
+                            {
+                                if (_top - top2 < 10)
+                                    return false;
+                            }
+                            else if (voiture.directionActuelle() == "top" && voiture.Direction == "left" && voiture.Stopped)
+                            {
+                                if (left - _left2 < 10)
+                                    return false;
+                            }
+                            else if (voiture.directionActuelle() == "bot" && voiture.Direction == "right" && voiture.Stopped)
+                            {
+                                if (_left - left2 < 10)
+                                    return false;
+                            }
+                        }*/
+                        //if(distance)
 
                 }
             }
@@ -391,6 +448,7 @@ namespace TPNote
                         int left = voiture.CoordonneesApparition[0];
                         int top = voiture.CoordonneesApparition[1];
                         //on détermine si la voiture s'arrête ou non
+
                         if (!voiture.sortieDuCarrefour())
                             voiture.Stopped = isStopped(voiture);
                         else
@@ -405,18 +463,48 @@ namespace TPNote
                             if (!voiture.Turned)
                             {
 
-                                
-                                if (apparition == "left" && (feuG.Fill == Brushes.Orange || feuG.Fill == Brushes.Red) && left <= 244 && left >= 144)
-                                    voiture.Freine = 2;
 
-                                if (apparition == "right" && (feuD.Fill == Brushes.Orange || feuD.Fill == Brushes.Red) && left >= 424 && left <= 524)
-                                    voiture.Freine = 2;
+                                if (apparition == "left" && (feuG.Fill == Brushes.Orange || feuG.Fill == Brushes.Red) && left <= 338 && left >= 238)
+                                {
 
-                                if (apparition == "bot" && (feuB.Fill == Brushes.Orange || feuB.Fill == Brushes.Red) && top >= 424 && top <= 524)
-                                    voiture.Freine = 2;
+                                    if (left >= 318)
+                                        voiture.Freine = 3;
+                                    else
+                                        voiture.Freine = 2;
+                                }
+                                else
+                                    voiture.Freine = 1;
 
-                                if (apparition == "top" && (feuH.Fill == Brushes.Orange || feuH.Fill == Brushes.Red) && top <= 244 && top >= 144)
-                                    voiture.Freine = 2;
+
+                                if (apparition == "right" && (feuD.Fill == Brushes.Orange || feuD.Fill == Brushes.Red) && left >= 484 && left <= 584)
+                                {
+                                    if (left <= 504)
+                                        voiture.Freine = 3;
+                                    else
+                                        voiture.Freine = 2;
+                                }
+                                else
+                                    voiture.Freine = 1;
+
+                                if (apparition == "bot" && (feuB.Fill == Brushes.Orange || feuB.Fill == Brushes.Red) && top >= 490 && top <= 590)
+                                {
+                                    if (top <= 510)
+                                        voiture.Freine = 3;
+                                    else
+                                        voiture.Freine = 2;
+                                }
+                                else
+                                    voiture.Freine = 1;
+
+                                if (apparition == "top" && (feuH.Fill == Brushes.Orange || feuH.Fill == Brushes.Red) && top <= 348 && top >= 248)
+                                {
+                                    if (top >= 318)
+                                        voiture.Freine = 3;
+                                    else
+                                        voiture.Freine = 2;
+                                }
+                                else
+                                    voiture.Freine = 1;
 
                                 // on détermine dans quel sens on fait avancer la voiture
                                 if (apparition == "top")
@@ -432,16 +520,16 @@ namespace TPNote
                                 // on détermine si la voiture est dans le carrefour, et donc si c'est le moment de tourner
                                 if ((apparition == "left" || apparition == "right") && (voiture.Direction != "right" || voiture.Direction != "left"))
                                 {
-                                    if (voiture.Direction == "bot" && left == 300)
+                                    if (voiture.Direction == "bot" && left == 370)
                                         voiture.tourner();
-                                    else if (voiture.Direction == "top" && left == 370)
+                                    else if (voiture.Direction == "top" && left == 440)
                                         voiture.tourner();
                                 }
                                 if ((apparition == "top" || apparition == "bot") && (voiture.Direction != "bot" || voiture.Direction != "top"))
                                 {
-                                    if (voiture.Direction == "right" && top == 370)
+                                    if (voiture.Direction == "right" && top == 440)
                                         voiture.tourner();
-                                    else if (voiture.Direction == "left" && top == 300)
+                                    else if (voiture.Direction == "left" && top == 370)
                                         voiture.tourner();
                                 }
                                 //
@@ -464,6 +552,7 @@ namespace TPNote
                         supprimerVoiture(voiture);
                     }
                 }
+
         }
 
         private void drawVoitures()
@@ -497,7 +586,7 @@ namespace TPNote
         private void supprimerVoiture(VoitureAgent voiture)
         {
 
-            if (voiture.CoordonneesApparition[0] > 760 || voiture.CoordonneesApparition[0] < -60 || voiture.CoordonneesApparition[1] < -60 || voiture.CoordonneesApparition[1] > 760)
+            if (voiture.CoordonneesApparition[0] > 850 || voiture.CoordonneesApparition[0] < -80 || voiture.CoordonneesApparition[1] < -80 || voiture.CoordonneesApparition[1] > 850)
             {
                 voitureList.Remove(voiture);
             }
