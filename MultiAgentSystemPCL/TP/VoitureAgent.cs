@@ -9,6 +9,8 @@ namespace MultiAgentSystemPCL.TP
 
     public class VoitureAgent
     {
+        public int IndexCouleurvoiture { get; set; }
+
         private Boolean stopped;
 
         public Boolean Stopped
@@ -86,6 +88,8 @@ namespace MultiAgentSystemPCL.TP
 
         public VoitureAgent(int apparition)
         {
+            Random randomGenerator = new Random();
+            IndexCouleurvoiture = randomGenerator.Next(3);
             coordonneesApparition = getApparition(apparition);
             direction = rdmDirection();
 
