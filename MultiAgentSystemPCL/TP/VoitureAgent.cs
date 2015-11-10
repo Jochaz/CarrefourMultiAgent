@@ -68,42 +68,55 @@ namespace MultiAgentSystemPCL.TP
             set { coordonneesApparition = value; }
         }
 
-        private int vitesse;
+        private int freine;
 
-        public int Vitesse
+        public int Freine
         {
-            get { return vitesse; }
-            set { vitesse = value; }
+            get { return freine; }
+            set { freine = value; }
         }
 
-        public VoitureAgent()
+        private int distanceSecurite;
+
+        public int DistanceSecurite
         {
-            coordonneesApparition = rdmApparition();
+            get { return distanceSecurite; }
+            set { distanceSecurite = value; }
+        }
+
+        public VoitureAgent(int apparition)
+        {
+            coordonneesApparition = getApparition(apparition);
             direction = rdmDirection();
-
-
 
             if (apparitionToString() == "bot" || apparitionToString() == "top")
             {
-                width = 20;
-                height = 30;
+                width = 15;
+                height = 22;
 
             }
             else
             {
-                width = 30;
-                height = 20;
+                width = 22;
+                height = 15;
             }
-            vitesse = 1;
+            freine = 1;
             turned = false;
             stopped = false;
 
+            distanceSecurite = rdmDistance();
+
+            //if(direction == "left")
+
         }
-        private int[] rdmApparition()
+
+        private int rdmDistance()
         {
-            int value;
             Random randomGenerator = new Random();
-            value = randomGenerator.Next(4);
+            return randomGenerator.Next(8);
+        }
+        private int[] getApparition(int value)
+        {
             int[] tabCoordonnees = new int[3];
 
             /* tabCoordonnees[2]
@@ -115,24 +128,24 @@ namespace MultiAgentSystemPCL.TP
             if (value == 0)
             {
                 tabCoordonnees[0] = -60;
-                tabCoordonnees[1] = 370;
+                tabCoordonnees[1] = 385;
                 tabCoordonnees[2] = 1;
             }
             else if (value == 1)
             {
                 tabCoordonnees[0] = 700;
-                tabCoordonnees[1] = 295;
+                tabCoordonnees[1] = 290;
                 tabCoordonnees[2] = 2;
             }
             else if (value == 2)
             {
-                tabCoordonnees[0] = 300;
+                tabCoordonnees[0] = 290;
                 tabCoordonnees[1] = -60;
                 tabCoordonnees[2] = 3;
             }
             else if (value == 3)
             {
-                tabCoordonnees[0] = 370;
+                tabCoordonnees[0] = 385;
                 tabCoordonnees[1] = 700;
                 tabCoordonnees[2] = 4;
             }
@@ -187,7 +200,24 @@ namespace MultiAgentSystemPCL.TP
             else if (apparition == 4)
                 return "bot";
 
-            return "top";
+            return "";
+        }
+
+        public string directionActuelle()
+        {
+            if (!turned)
+            {
+                if (apparitionToString() == "left")
+                    return "right";
+                if (apparitionToString() == "right")
+                    return "left";
+                if (apparitionToString() == "bot")
+                    return "top";
+                return "bot";
+            }
+            else
+                return direction;
+
         }
 
         public void tourner()
@@ -197,49 +227,43 @@ namespace MultiAgentSystemPCL.TP
             temp = width;
             width = height;
             height = temp;
-
-
-            if (direction == "top" && apparitionToString() == "left")
-            {
-                coordonneesApparition[0] += 15;
-                coordonneesApparition[1] -= 25;
-            }
-            if (direction == "top" && apparitionToString() == "right")
-            {
-                //coordonneesApparition[0] += 25;
-                coordonneesApparition[1] -= 25;
-            }
-            if (direction == "bot" && (apparitionToString() == "right" || apparitionToString() == "left"))
-            {
-                //coordonneesApparition[0] += 25;
-                coordonneesApparition[1] += 15;
-            }
-            if (direction == "left" && apparitionToString() == "top")
-            {
-                coordonneesApparition[0] -= 25;
-                coordonneesApparition[1] += 15;
-            }
-            if (direction == "right" && apparitionToString() == "top")
-            {
-                coordonneesApparition[0] += 15;
-                coordonneesApparition[1] += 15;
-            }
-           /* if (direction == "bot" && apparitionToString() == "left")
-            {
-                //coordonneesApparition[0] += 25;
-                coordonneesApparition[1] += 15;
-            }
-            */
-            /* if (direction == "left" && (apparitionToString() == "bot" || apparitionToString() == "top"))
-                coordonneesApparition[0] += 15;
-            coordonneesApparition[1] -= 25;
-
-            if (direction == "bot" && (apparitionToString() == "right" || apparitionToString() == "left"))
-                coordonneesApparition[1] += 10; 
-            */
-
             turned = true;
             
+        }
+
+        public Boolean timeToTurn()
+        {
+            string apparition = apparitionToString();
+            int left = CoordonneesApparition[0];
+            int top = CoordonneesApparition[1];
+            if ((apparition == "left" || apparition == "right") && (Direction != "right" || Direction != "left"))
+            {
+                if (Direction == "bot" && left == 300)
+                    return true;
+                else if (Direction == "top" && left == 370)
+                    return true;
+            }
+            if ((apparition == "top" || apparition == "bot") && (Direction != "bot" || Direction != "top"))
+            {
+                if (Direction == "right" && top == 370)
+                    return true;
+                else if (Direction == "left" && top == 300)
+                    return true;
+            }
+            return false;
+        }
+
+        public Boolean sortieDuCarrefour()
+        {
+            if(directionActuelle() == "left" && coordonneesApparition[0] < 244)
+                return true;
+            if (directionActuelle() == "right" && coordonneesApparition[0] > 424)
+                return true;
+            if (directionActuelle() == "bot" && coordonneesApparition[1] > 424)
+                return true;
+            if (directionActuelle() == "top" && coordonneesApparition[1] < 244)
+                return true;
+            return false;
         }
 
     }
