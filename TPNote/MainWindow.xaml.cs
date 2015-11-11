@@ -222,6 +222,7 @@ namespace TPNote
                             lastBot = uneVoiture;
 
                         lastApparition = uneVoiture.CoordonneesApparition[2];
+                        nbVoiture_Total.Content = Convert.ToInt32(nbVoiture_Total.Content) + 1;
                     }else
                         Console.WriteLine("bouchon sur la voie de " + uneVoiture.apparitionToString());
                 }
@@ -800,17 +801,17 @@ namespace TPNote
 
         private void RdbDense_Checked(object sender, RoutedEventArgs e)
         {
-            circulation = 40;
+            circulation = 50;
         }
 
         private void RdbModeree_Checked(object sender, RoutedEventArgs e)
         {
-            circulation = 80;
+            circulation = 90;
         }
 
         private void RdbLeger_Checked(object sender, RoutedEventArgs e)
         {
-            circulation = 130;
+            circulation = 140;
         }
 
         private void btnModifier_Click(object sender, RoutedEventArgs e)
