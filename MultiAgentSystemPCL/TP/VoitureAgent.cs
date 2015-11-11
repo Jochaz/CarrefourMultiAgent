@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel.Channels;
 using System.Text;
+using System.Windows.Shapes;
 
 
 namespace MultiAgentSystemPCL.TP
@@ -9,6 +11,7 @@ namespace MultiAgentSystemPCL.TP
 
     public class VoitureAgent
     {
+        public int Clignote { get; set; }
         public int IndexCouleurvoiture { get; set; }
 
         private Boolean stopped;
@@ -92,7 +95,7 @@ namespace MultiAgentSystemPCL.TP
             IndexCouleurvoiture = randomGenerator.Next(3);
             coordonneesApparition = getApparition(apparition);
             direction = rdmDirection();
-
+            Clignote = randomGenerator.Next(2);
             if (apparitionToString() == "bot" || apparitionToString() == "top")
             {
                 width = 15;

@@ -25,6 +25,7 @@ namespace TPNote
         List<VoitureAgent> voitureList = null;
         private DispatcherTimer dispatcherTimer;
         private DispatcherTimer feuTimer;
+        private DispatcherTimer clignotanTimer;
         private Ellipse feuH;
         private Ellipse feuB;
         private Ellipse feuG;
@@ -35,6 +36,7 @@ namespace TPNote
         private int tempsFeu;
         private int vitesse = 1;
         private int circulation;
+        private int secondeCligno = 0;
         Random randomGenerator = new Random();
         private List<SolidColorBrush> couleurList = null; 
         public MainWindow()
@@ -138,6 +140,11 @@ namespace TPNote
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             dispatcherTimer.Start();
+
+            clignotanTimer = new DispatcherTimer();
+            clignotanTimer.Tick += clignotanTimer_Tick;
+            clignotanTimer.Interval = new TimeSpan(0,0,0, 0, 500);
+            clignotanTimer.Start();
             InitialisationDesFeux();
             feuH.Fill = Brushes.GreenYellow;
             feuB.Fill = Brushes.GreenYellow;
@@ -146,6 +153,15 @@ namespace TPNote
             feuGActif = false;
             feuTimer.Start();
             circulation = 150;
+        }
+
+        private void clignotanTimer_Tick(object sender, EventArgs e)
+        {
+            secondeCligno++;
+            if (secondeCligno == 2)
+            {
+                secondeCligno = 0;
+            }
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
@@ -212,7 +228,14 @@ namespace TPNote
 
             clignotant.*/
 
-            
+            if (feuTimer.IsEnabled)
+            {
+                feuTimer.Stop();
+            }
+            else
+            {
+                feuTimer.Start();
+            }
             
             
             if (dispatcherTimer.IsEnabled)
@@ -566,9 +589,16 @@ namespace TPNote
             viderCanvas();
 
             Rectangle body;
-            foreach(VoitureAgent voiture in voitureList){
+            Rectangle clignoLine;
+            foreach(VoitureAgent voiture in voitureList)
+            {
 
+
+                clignoLine = new Rectangle();
                 body = new Rectangle();
+               
+
+                //Définition du graphisme de la voiture
                 body.Stroke = couleurList[voiture.IndexCouleurvoiture];
                 body.Fill = couleurList[voiture.IndexCouleurvoiture];
                 body.Width = voiture.Width;
@@ -577,6 +607,97 @@ namespace TPNote
                 body.Tag = voiture;
                 Canvas.SetLeft(body, voiture.CoordonneesApparition[0]);
                 Canvas.SetTop(body, voiture.CoordonneesApparition[1]);
+
+                //Définition du graphise du clignotant
+                if (!voiture.Turned)
+                {
+                    clignoLine.Fill = Brushes.OrangeRed;
+                    clignoLine.Stroke = Brushes.OrangeRed;
+                    clignoLine.Width = 4;
+                    clignoLine.Height = 4;
+                    switch (voiture.apparitionToString())
+                    {
+                        case "top":
+                            if (voiture.Direction != "bot")
+                            {
+                                if (secondeCligno == voiture.Clignote)
+                                {
+                                    routeCanvas.Children.Add(clignoLine);
+                                    Canvas.SetTop(clignoLine, voiture.CoordonneesApparition[1] + voiture.Height - 4);
+                                    if (voiture.Direction == "left")
+                                    {
+                                        Canvas.SetLeft(clignoLine, voiture.CoordonneesApparition[0]);
+                                    }
+                                    else if (voiture.Direction == "right")
+                                    {
+                                        Canvas.SetLeft(clignoLine, voiture.CoordonneesApparition[0] + voiture.Width - 4);
+                                    }
+                                }
+                            }
+                            break;
+                        case "bot":
+                            if (voiture.Direction != "top")
+                            {
+                                if (secondeCligno == voiture.Clignote)
+                                {
+                                    routeCanvas.Children.Add(clignoLine);
+                                    Canvas.SetTop(clignoLine, voiture.CoordonneesApparition[1]);
+                                    if (voiture.Direction == "left")
+                                    {
+                                        Canvas.SetLeft(clignoLine, voiture.CoordonneesApparition[0]);
+                                    }
+                                    else if (voiture.Direction == "right")
+                                    {
+                                        Canvas.SetLeft(clignoLine, voiture.CoordonneesApparition[0] + voiture.Width - 4);
+                                    }
+                                }
+                            }
+                            break;
+                        case "left":
+                            if (voiture.Direction != "right")
+                            {
+                                if (secondeCligno == voiture.Clignote)
+                                {
+                                    routeCanvas.Children.Add(clignoLine);
+                                    Canvas.SetLeft(clignoLine, voiture.CoordonneesApparition[0] + voiture.Width - 4);
+                                    if (voiture.Direction == "top")
+                                    {
+                                        Canvas.SetTop(clignoLine, voiture.CoordonneesApparition[1]);
+                                    }
+                                    else if (voiture.Direction == "bot")
+                                    {
+                                        Canvas.SetTop(clignoLine, voiture.CoordonneesApparition[1] + voiture.Height - 4);
+                                    }
+                                }
+                            }
+                            break;
+                        case "right":
+                            if (voiture.Direction != "right")
+                            {
+                                if (secondeCligno == voiture.Clignote)
+                                {
+                                    routeCanvas.Children.Add(clignoLine);
+                                    Canvas.SetLeft(clignoLine, voiture.CoordonneesApparition[0]);
+                                    if (voiture.Direction == "top")
+                                    {
+                                        Canvas.SetTop(clignoLine, voiture.CoordonneesApparition[1]);
+                                    }
+                                    else if (voiture.Direction == "bot")
+                                    {
+                                        Canvas.SetTop(clignoLine, voiture.CoordonneesApparition[1] + voiture.Height - 4);
+                                    }
+                                }
+                            }
+                            break;
+                    }
+                }
+
+
+                //routeCanvas.Children.Add(clignoLine);
+                //Canvas.SetLeft(clignoLine, voiture.CoordonneesApparition[0]);
+                //Canvas.SetTop(clignoLine, voiture.CoordonneesApparition[1]);
+
+                
             } 
         }
 
@@ -589,6 +710,12 @@ namespace TPNote
             {
                 routeCanvas.Children.Remove(rectangle);
             }
+
+            //var lines = routeCanvas.Children.OfType<Line>().ToList();
+            //foreach (var line in lines)
+            //{
+            //    routeCanvas.Children.Remove(line);
+            //}
         }
 
         private void supprimerVoiture(VoitureAgent voiture)
