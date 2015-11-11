@@ -32,13 +32,24 @@ namespace TPNote
         private Boolean feuGActif;
         private int secondeFeu;
         private int secondeCanvas;
+        private int tempsFeu;
         private int vitesse = 1;
+        private int circulation;
         Random randomGenerator = new Random();
+        private List<SolidColorBrush> couleurList = null; 
         public MainWindow()
         {
             InitializeComponent();
         }
 
+        private void InitialisationListeCouleur()
+        {
+            couleurList = new List<SolidColorBrush>();
+            couleurList.Add(Brushes.AntiqueWhite);
+            couleurList.Add(Brushes.Gray);
+            couleurList.Add(Brushes.SteelBlue);
+
+        }
         private void InitialisationDesFeux()
         {
             secondeFeu = 0;
@@ -49,9 +60,10 @@ namespace TPNote
             feuD = new Ellipse();
             feuG = new Ellipse();
             feuH = new Ellipse();
-
-            PlaceLesFeux(feuB, 490, 490, "feuB");
-            PlaceLesFeux(feuH, 347, 347, "feuH");
+            tempsFeu = 7;
+            TxtTempsFeu.Text = tempsFeu.ToString();
+            PlaceLesFeux(feuB, 485, 485, "feuB");
+            PlaceLesFeux(feuH, 340, 340, "feuH");
             PlaceLesFeux(feuG, 337, 490, "FeuG");
             PlaceLesFeux(feuD, 485, 344, "feuD"); 
         }
@@ -72,7 +84,7 @@ namespace TPNote
         {
             secondeFeu++;
 
-            if (secondeFeu == 7)
+            if (secondeFeu == tempsFeu)
             {
                 if (!feuGActif)
                 {
@@ -85,7 +97,7 @@ namespace TPNote
                     feuD.Fill = Brushes.Orange;                  
                 }
             }
-            else if (secondeFeu == 10)
+            else if (secondeFeu == tempsFeu + 3)
             {
                 if (!feuGActif)
                 {
@@ -98,7 +110,7 @@ namespace TPNote
                     feuD.Fill = Brushes.Red;
                 }
             }
-            else if (secondeFeu == 13)
+            else if (secondeFeu == tempsFeu + 6)
             {
                 secondeFeu = 0;
                 feuGActif = !feuGActif;
@@ -117,6 +129,7 @@ namespace TPNote
 
         private void FrmPrinc_Loaded(object sender, RoutedEventArgs e)
         {
+            InitialisationListeCouleur();
             voitureList = new List<VoitureAgent>();
             ImageBrush ib = new ImageBrush();
             ib.ImageSource = new BitmapImage(new Uri(@"..\..\Img\route.png", UriKind.Relative));
@@ -132,6 +145,7 @@ namespace TPNote
             feuD.Fill = Brushes.Red;
             feuGActif = false;
             feuTimer.Start();
+            circulation = 150;
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
@@ -139,7 +153,7 @@ namespace TPNote
 
             int apparition;
             secondeCanvas++;
-            if(secondeCanvas % 65 == 0){
+            if(secondeCanvas % circulation == 0){
                 apparition = randomGenerator.Next(4);
                 VoitureAgent uneVoiture = new VoitureAgent(apparition);
 
@@ -173,8 +187,8 @@ namespace TPNote
         private void DrawVoiture(VoitureAgent voiture)
         {
             Rectangle body = new Rectangle();
-            body.Stroke = Brushes.Chocolate;
-            body.Fill = Brushes.Coral;
+            body.Stroke = couleurList[voiture.IndexCouleurvoiture];
+            body.Fill = couleurList[voiture.IndexCouleurvoiture];
             body.Width = voiture.Width;
             body.Height = voiture.Height;
             routeCanvas.Children.Add(body);
@@ -204,10 +218,12 @@ namespace TPNote
             if (dispatcherTimer.IsEnabled)
             {
                 dispatcherTimer.Stop();
+                btnPause.Content = "Reprendre";
             }
             else
             {
                 dispatcherTimer.Start();
+                btnPause.Content = "Pause";
             }
             
         }
@@ -563,15 +579,17 @@ namespace TPNote
             foreach(VoitureAgent voiture in voitureList){
 
                 body = new Rectangle();
-                body.Stroke = Brushes.Chocolate;
-                body.Fill = Brushes.Coral;
+                body.Stroke = couleurList[voiture.IndexCouleurvoiture];
+                body.Fill = couleurList[voiture.IndexCouleurvoiture];
                 body.Width = voiture.Width;
                 body.Height = voiture.Height;
                 routeCanvas.Children.Add(body);
+                body.Tag = voiture;
                 Canvas.SetLeft(body, voiture.CoordonneesApparition[0]);
                 Canvas.SetTop(body, voiture.CoordonneesApparition[1]);
             } 
         }
+
 
         private void viderCanvas()
         {
@@ -592,5 +610,50 @@ namespace TPNote
             }
 
         }
+
+        private void RdbDense_Checked(object sender, RoutedEventArgs e)
+        {
+            circulation = 60;
+        }
+
+        private void RdbModeree_Checked(object sender, RoutedEventArgs e)
+        {
+            circulation = 100;
+        }
+
+        private void RdbLeger_Checked(object sender, RoutedEventArgs e)
+        {
+            circulation = 150;
+        }
+
+        private void btnModifier_Click(object sender, RoutedEventArgs e)
+        {
+            int test;
+            if (int.TryParse(TxtTempsFeu.Text, out test))
+            {
+                if (Convert.ToInt32(TxtTempsFeu.Text) < 5 || Convert.ToInt32(TxtTempsFeu.Text) > 120)
+                {
+                    TxtTempsFeu.Text = tempsFeu.ToString();
+                    MessageBox.Show("Veuillez saisir une valeur entre 5 et 120", "Attention !", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+                else
+                {
+
+                    tempsFeu = Convert.ToInt32(TxtTempsFeu.Text);
+                    if (secondeFeu > tempsFeu)
+                    {
+                        secondeFeu = tempsFeu;
+                    }
+                }
+            }
+            else
+            {
+                TxtTempsFeu.Text = tempsFeu.ToString();
+                MessageBox.Show("Veuillez saisir une valeur entre 10 et 120", "Attention !", MessageBoxButton.OK,
+    MessageBoxImage.Error);
+            }
+        }
+
     }
 }
