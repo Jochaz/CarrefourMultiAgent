@@ -11,6 +11,15 @@ namespace MultiAgentSystemPCL.TP
     {
         public int IndexCouleurvoiture { get; set; }
 
+        // ;) ;) ;)
+        private int fifou;
+
+        public int Fifou
+        {
+            get { return fifou; }
+            set { fifou = value; }
+        }
+
         private Boolean stopped;
 
         public Boolean Stopped
@@ -116,6 +125,7 @@ namespace MultiAgentSystemPCL.TP
 
         private int rdmDistance()
         {
+            
             Random randomGenerator = new Random();
             return randomGenerator.Next(8);
         }
@@ -162,31 +172,76 @@ namespace MultiAgentSystemPCL.TP
         {
             int value;
             Random randomGenerator = new Random();
-            value = randomGenerator.Next(4);
+            value = randomGenerator.Next(6);
 
 
             while (value + 1 == coordonneesApparition[2])
             {
-                value = randomGenerator.Next(4);
+                value = randomGenerator.Next(5);
             }
 
             string direction = "";
-            if (value == 0)
-            {
-                direction = "left";
-            }
-            else if (value == 1)
-            {
-                direction = "right";
-            }
-            else if (value == 2)
-            {
-                direction = "top";
-            }
-            else if (value == 3)
-            {
-                direction = "bot";
 
+            if (apparitionToString() == "left")
+            {
+                if (value == 0 || value == 5)
+                {
+                    direction = "top";
+                }
+                else if (value == 1 || value == 2)
+                {
+                    direction = "right";
+                }
+                else if (value == 3 || value == 4)
+                {
+                    direction = "bot";
+                }
+
+            }
+            else if (apparitionToString() == "right")
+            {
+                if (value == 0 || value == 5)
+                {
+                    direction = "bot";
+                }
+                else if (value == 1 || value == 2)
+                {
+                    direction = "left";
+                }
+                else if (value == 3 || value == 4)
+                {
+                    direction = "top";
+                }
+            }
+            else if (apparitionToString() == "top")
+            {
+                if (value == 0 || value == 5)
+                {
+                    direction = "right";
+                }
+                else if (value == 1 || value == 2)
+                {
+                    direction = "left";
+                }
+                else if (value == 3 || value == 4)
+                {
+                    direction = "bot";
+                }
+            }
+            else if (apparitionToString() == "bot")
+            {
+                if (value == 0 || value == 5)
+                {
+                    direction = "left";
+                }
+                else if (value == 1 || value == 2)
+                {
+                    direction = "right";
+                }
+                else if (value == 3 || value == 4)
+                {
+                    direction = "top";
+                }
             }
             return direction;
         }
