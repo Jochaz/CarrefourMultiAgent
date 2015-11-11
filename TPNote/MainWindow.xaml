@@ -19,6 +19,9 @@
         <Label Content="TP réalisé par GALEA Baptiste et&#xD;&#xA;CHARIOT Jordan&#xD;&#xA;&#xD;&#xA;Novembre 2015" Canvas.Left="593" Canvas.Top="713" Width="222" Height="108" Foreground="White"/>
         <Label Content="Nombre de voiture(s) en circulation :" Canvas.Left="14" Canvas.Top="71" Width="230" Foreground="White"/>
         <Label x:Name="nbVoiture" Content="0" Canvas.Left="234" Canvas.Top="71" Foreground="White"/>
+        <Label Content="voitures sont passées par ce carrefour" Canvas.Top="105" Width="230" Foreground="White" Canvas.Left="120"/>
+        <Label x:Name="nbVoiture_Total" Content="0" Canvas.Left="83" Canvas.Top="106" Foreground="White" Width="39"/>
+        <Label Content="Aujourd'hui" Canvas.Top="106" Width="78" Foreground="White" Canvas.Left="3"/>
 
     </Canvas>
 
