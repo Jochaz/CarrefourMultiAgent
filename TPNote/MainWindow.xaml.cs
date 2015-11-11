@@ -25,6 +25,7 @@ namespace TPNote
         List<VoitureAgent> voitureList = null;
         private DispatcherTimer dispatcherTimer;
         private DispatcherTimer feuTimer;
+        private DispatcherTimer clignotanTimer;
         private Ellipse feuH;
         private Ellipse feuB;
         private Ellipse feuG;
@@ -35,13 +36,15 @@ namespace TPNote
         private int tempsFeu;
         private int vitesse = 1;
         private int circulation;
-        private int distanceSecurite = 6;
+        private int distanceSecurite = 8;
         private VoitureAgent lastTop;
         private VoitureAgent lastBot;
         private VoitureAgent lastLeft;
         private VoitureAgent lastRight; 
+        private int secondeCligno = 0;
         Random randomGenerator = new Random();
-        private List<SolidColorBrush> couleurList = null; 
+        private List<SolidColorBrush> couleurList = null;
+        private int lastApparition;
         public MainWindow()
         {
             InitializeComponent();
@@ -141,8 +144,13 @@ namespace TPNote
             routeCanvas.Background = ib;
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += dispatcherTimer_Tick;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 15);
             dispatcherTimer.Start();
+
+            clignotanTimer = new DispatcherTimer();
+            clignotanTimer.Tick += clignotanTimer_Tick;
+            clignotanTimer.Interval = new TimeSpan(0,0,0, 0, 500);
+            clignotanTimer.Start();
             InitialisationDesFeux();
             feuH.Fill = Brushes.GreenYellow;
             feuB.Fill = Brushes.GreenYellow;
@@ -150,7 +158,17 @@ namespace TPNote
             feuD.Fill = Brushes.Red;
             feuGActif = false;
             feuTimer.Start();
-            circulation = 150;
+            circulation = 120;
+
+        }
+
+        private void clignotanTimer_Tick(object sender, EventArgs e)
+        {
+            secondeCligno++;
+            if (secondeCligno == 2)
+            {
+                secondeCligno = 0;
+            }
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
@@ -159,46 +177,62 @@ namespace TPNote
             int apparition;
             secondeCanvas++;
             if(secondeCanvas % circulation == 0){
+                
                 apparition = randomGenerator.Next(4);
+
                 VoitureAgent uneVoiture = new VoitureAgent(apparition);
 
 
-                if (voitureList.Count != 0 && lastBot != null && lastLeft != null && lastRight != null && lastTop != null)
+                if (voitureList.Count != 0 && circulation == 40)
                 {
-                    if (uneVoiture.apparitionToString() == "left" && lastLeft.Direction == "top" && uneVoiture.Direction == "top")
-                        risque = true;
-                    if (uneVoiture.apparitionToString() == "right" && lastRight.Direction == "bot" && uneVoiture.Direction == "bot")
-                        risque = true;
-                    if (uneVoiture.apparitionToString() == "top" && lastTop.Direction == "right" && uneVoiture.Direction == "right")
-                        risque = true;
-                    if (uneVoiture.apparitionToString() == "bot" && lastBot.Direction == "left" && uneVoiture.Direction == "left")
-                        risque = true;
+                    try
+                    {
+                        if (uneVoiture.apparitionToString() == "left" && lastLeft.Direction == "top" && uneVoiture.Direction == "top" && lastLeft != null)
+                            risque = true;
+                        if (uneVoiture.apparitionToString() == "right" && lastRight.Direction == "bot" && uneVoiture.Direction == "bot" && lastRight != null)
+                            risque = true;
+                        if (uneVoiture.apparitionToString() == "top" && lastTop.Direction == "right" && uneVoiture.Direction == "right" && lastTop != null)
+                            risque = true;
+                        if (uneVoiture.apparitionToString() == "bot" && lastBot.Direction == "left" && uneVoiture.Direction == "left" && lastBot != null)
+                            risque = true;
+                    }
+                    catch
+                    {
+
+                    }
+
                 }
                 //Console.WriteLine(uneVoiture.Direction);
-                if (!bouchon(uneVoiture.apparitionToString()) && !risque)
+                if (!risque)
                 {
-                    voitureList.Add(uneVoiture);
-                    DrawVoiture(uneVoiture);
 
-                    if (uneVoiture.apparitionToString() == "left")
-                        lastLeft = uneVoiture;
-                    if (uneVoiture.apparitionToString() == "right")
-                        lastRight = uneVoiture;
-                    if (uneVoiture.apparitionToString() == "top")
-                        lastTop = uneVoiture;
-                    if (uneVoiture.apparitionToString() == "bot")
-                        lastBot = uneVoiture;
+
+                    if (!bouchon(uneVoiture.apparitionToString()))
+                    {
+                        voitureList.Add(uneVoiture);
+                        DrawVoiture(uneVoiture);
+
+                        if (uneVoiture.apparitionToString() == "left")
+                            lastLeft = uneVoiture;
+                        if (uneVoiture.apparitionToString() == "right")
+                            lastRight = uneVoiture;
+                        if (uneVoiture.apparitionToString() == "top")
+                            lastTop = uneVoiture;
+                        if (uneVoiture.apparitionToString() == "bot")
+                            lastBot = uneVoiture;
+
+                        lastApparition = uneVoiture.CoordonneesApparition[2];
+                    }else
+                        Console.WriteLine("bouchon sur la voie de " + uneVoiture.apparitionToString());
                 }
                 else
-                    Console.WriteLine("bouchon !!");
-
-
-                if (risque)
                     Console.WriteLine("Une voiture n'est pas apparue");
 
             }
             updateVoitures();
             drawVoitures();
+
+            nbVoiture.Content = voitureList.Count;
         }
 
         private Boolean bouchon(string apparition)
@@ -242,7 +276,14 @@ namespace TPNote
 
             clignotant.*/
 
-            
+            if (feuTimer.IsEnabled)
+            {
+                feuTimer.Stop();
+            }
+            else
+            {
+                feuTimer.Start();
+            }
             
             
             if (dispatcherTimer.IsEnabled)
@@ -303,13 +344,13 @@ namespace TPNote
 
 
 
-                        if (distance > 0 && distance < 10)
+                        if (distance > -5 && distance < 15)
                         {
                             return 4;
                         }
-                        else if (distance >= 10 && distance < 20)
+                        else if (distance >= 15 && distance < 25)
                             return 3;
-                        else if (distance >= 20 && distance < 30)
+                        else if (distance >= 25 && distance < 35)
                         {
                             return 2;
                         }
@@ -357,8 +398,8 @@ namespace TPNote
                 if (uneVoiture != voiture)
                 {
                     //on va déterminer si une voiture devant est arrêtée
-                    //if (uneVoiture.Stopped && !uneVoiture.Turned && uneVoiture.apparitionToString() == voiture.apparitionToString())
-                    if (uneVoiture.Stopped && uneVoiture.apparitionToString() == voiture.apparitionToString())
+ 
+                    /*if (uneVoiture.Stopped && uneVoiture.apparitionToString() == voiture.apparitionToString())
                     {
 
                         if (uneVoiture.apparitionToString() == "left")
@@ -368,6 +409,23 @@ namespace TPNote
                         else if (uneVoiture.apparitionToString() == "bot")
                             distance = voiture.CoordonneesApparition[1] - (uneVoiture.CoordonneesApparition[1] + uneVoiture.Height);
                         else if (uneVoiture.apparitionToString() == "top")
+                            distance = uneVoiture.CoordonneesApparition[1] - (voiture.CoordonneesApparition[1] + voiture.Height);
+
+
+                        if (distance < distanceSecurite && distance > 0)
+                            return true;
+
+                    }*/
+                    if(uneVoiture.Stopped && voiture.directionActuelle() == uneVoiture.directionActuelle())
+                    {
+
+                        if (uneVoiture.directionActuelle() == "right")
+                            distance = uneVoiture.CoordonneesApparition[0] - (voiture.CoordonneesApparition[0] + voiture.Width);
+                        else if (uneVoiture.directionActuelle() == "left")
+                            distance = voiture.CoordonneesApparition[0] - (uneVoiture.CoordonneesApparition[0] + uneVoiture.Width);
+                        else if (uneVoiture.directionActuelle() == "top")
+                            distance = voiture.CoordonneesApparition[1] - (uneVoiture.CoordonneesApparition[1] + uneVoiture.Height);
+                        else if (uneVoiture.directionActuelle() == "bot")
                             distance = uneVoiture.CoordonneesApparition[1] - (voiture.CoordonneesApparition[1] + voiture.Height);
 
 
@@ -391,13 +449,13 @@ namespace TPNote
                     //fonctionnel !!  if (!uneVoiture.Turned && !uneVoiture.Stopped)
 
                     
-                    if (voiture.apparitionToString() == "left" && voiture.Direction == "top" && uneVoiture.apparitionToString() == "right" && voiture.timeToTurn() && distance < 90 && distance > -40 && feuD.Fill == Brushes.GreenYellow)
+                    if (voiture.apparitionToString() == "left" && voiture.Direction == "top" && uneVoiture.apparitionToString() == "right" && voiture.timeToTurn() && distance < 70 && distance > -40 && feuD.Fill == Brushes.GreenYellow)
                             return true;
-                    if (voiture.apparitionToString() == "right" && voiture.Direction == "bot" && uneVoiture.apparitionToString() == "left" && voiture.timeToTurn() && distance < 90 && distance > -40 && feuG.Fill == Brushes.GreenYellow)
+                    if (voiture.apparitionToString() == "right" && voiture.Direction == "bot" && uneVoiture.apparitionToString() == "left" && voiture.timeToTurn() && distance < 70 && distance > -40 && feuG.Fill == Brushes.GreenYellow)
                             return true;
-                    if (voiture.apparitionToString() == "bot" && voiture.Direction == "left" && uneVoiture.apparitionToString() == "top" && voiture.timeToTurn() && distance < 90 && distance > -40 && feuH.Fill == Brushes.GreenYellow)
+                    if (voiture.apparitionToString() == "bot" && voiture.Direction == "left" && uneVoiture.apparitionToString() == "top" && voiture.timeToTurn() && distance < 70 && distance > -40 && feuH.Fill == Brushes.GreenYellow)
                             return true;
-                    if (voiture.apparitionToString() == "top" && voiture.Direction == "right" && uneVoiture.apparitionToString() == "bot" && voiture.timeToTurn() && distance < 90 && distance > -40 && feuB.Fill == Brushes.GreenYellow)
+                    if (voiture.apparitionToString() == "top" && voiture.Direction == "right" && uneVoiture.apparitionToString() == "bot" && voiture.timeToTurn() && distance < 70 && distance > -40 && feuB.Fill == Brushes.GreenYellow)
                             return true;
                     /*
                     if (voiture.apparitionToString() == "left" && voiture.Direction == "top" && uneVoiture.apparitionToString() == "right" && left == 370 && distance < 60 && distance > -40)
@@ -434,8 +492,8 @@ namespace TPNote
                             distance = _top - top2;
                         }
 
-                    
-                        if (voiture.Direction == "top" || voiture.Direction == "bot")
+
+                        if (voiture.directionActuelle() == "top" || voiture.directionActuelle() == "bot")
                         {
                             if (!(left2 < _left || left > _left2))
                             {
@@ -601,9 +659,16 @@ namespace TPNote
             viderCanvas();
 
             Rectangle body;
-            foreach(VoitureAgent voiture in voitureList){
+            Rectangle clignoLine;
+            foreach(VoitureAgent voiture in voitureList)
+            {
 
+
+                clignoLine = new Rectangle();
                 body = new Rectangle();
+               
+
+                //Définition du graphisme de la voiture
                 body.Stroke = couleurList[voiture.IndexCouleurvoiture];
                 body.Fill = couleurList[voiture.IndexCouleurvoiture];
                 body.Width = voiture.Width;
@@ -612,6 +677,97 @@ namespace TPNote
                 body.Tag = voiture;
                 Canvas.SetLeft(body, voiture.CoordonneesApparition[0]);
                 Canvas.SetTop(body, voiture.CoordonneesApparition[1]);
+
+                //Définition du graphise du clignotant
+                if (!voiture.Turned && voiture.CoordonneesApparition[0] > 100 && voiture.CoordonneesApparition[0] < 600 && voiture.CoordonneesApparition[1] < 600 && voiture.CoordonneesApparition[1] > 100)
+                {
+                    clignoLine.Fill = Brushes.OrangeRed;
+                    clignoLine.Stroke = Brushes.OrangeRed;
+                    clignoLine.Width = 4;
+                    clignoLine.Height = 4;
+                    switch (voiture.apparitionToString())
+                    {
+                        case "top":
+                            if (voiture.Direction != "bot")
+                            {
+                                if (secondeCligno == voiture.Clignote)
+                                {
+                                    routeCanvas.Children.Add(clignoLine);
+                                    Canvas.SetTop(clignoLine, voiture.CoordonneesApparition[1] + voiture.Height - 4);
+                                    if (voiture.Direction == "left")
+                                    {
+                                        Canvas.SetLeft(clignoLine, voiture.CoordonneesApparition[0]);
+                                    }
+                                    else if (voiture.Direction == "right")
+                                    {
+                                        Canvas.SetLeft(clignoLine, voiture.CoordonneesApparition[0] + voiture.Width - 4);
+                                    }
+                                }
+                            }
+                            break;
+                        case "bot":
+                            if (voiture.Direction != "top")
+                            {
+                                if (secondeCligno == voiture.Clignote)
+                                {
+                                    routeCanvas.Children.Add(clignoLine);
+                                    Canvas.SetTop(clignoLine, voiture.CoordonneesApparition[1]);
+                                    if (voiture.Direction == "left")
+                                    {
+                                        Canvas.SetLeft(clignoLine, voiture.CoordonneesApparition[0]);
+                                    }
+                                    else if (voiture.Direction == "right")
+                                    {
+                                        Canvas.SetLeft(clignoLine, voiture.CoordonneesApparition[0] + voiture.Width - 4);
+                                    }
+                                }
+                            }
+                            break;
+                        case "left":
+                            if (voiture.Direction != "right")
+                            {
+                                if (secondeCligno == voiture.Clignote)
+                                {
+                                    routeCanvas.Children.Add(clignoLine);
+                                    Canvas.SetLeft(clignoLine, voiture.CoordonneesApparition[0] + voiture.Width - 4);
+                                    if (voiture.Direction == "top")
+                                    {
+                                        Canvas.SetTop(clignoLine, voiture.CoordonneesApparition[1]);
+                                    }
+                                    else if (voiture.Direction == "bot")
+                                    {
+                                        Canvas.SetTop(clignoLine, voiture.CoordonneesApparition[1] + voiture.Height - 4);
+                                    }
+                                }
+                            }
+                            break;
+                        case "right":
+                            if (voiture.Direction != "left")
+                            {
+                                if (secondeCligno == voiture.Clignote)
+                                {
+                                    routeCanvas.Children.Add(clignoLine);
+                                    Canvas.SetLeft(clignoLine, voiture.CoordonneesApparition[0]);
+                                    if (voiture.Direction == "top")
+                                    {
+                                        Canvas.SetTop(clignoLine, voiture.CoordonneesApparition[1]);
+                                    }
+                                    else if (voiture.Direction == "bot")
+                                    {
+                                        Canvas.SetTop(clignoLine, voiture.CoordonneesApparition[1] + voiture.Height - 4);
+                                    }
+                                }
+                            }
+                            break;
+                    }
+                }
+
+
+                //routeCanvas.Children.Add(clignoLine);
+                //Canvas.SetLeft(clignoLine, voiture.CoordonneesApparition[0]);
+                //Canvas.SetTop(clignoLine, voiture.CoordonneesApparition[1]);
+
+                
             } 
         }
 
@@ -624,6 +780,12 @@ namespace TPNote
             {
                 routeCanvas.Children.Remove(rectangle);
             }
+
+            //var lines = routeCanvas.Children.OfType<Line>().ToList();
+            //foreach (var line in lines)
+            //{
+            //    routeCanvas.Children.Remove(line);
+            //}
         }
 
         private void supprimerVoiture(VoitureAgent voiture)
@@ -643,12 +805,12 @@ namespace TPNote
 
         private void RdbModeree_Checked(object sender, RoutedEventArgs e)
         {
-            circulation = 85;
+            circulation = 80;
         }
 
         private void RdbLeger_Checked(object sender, RoutedEventArgs e)
         {
-            circulation = 150;
+            circulation = 130;
         }
 
         private void btnModifier_Click(object sender, RoutedEventArgs e)
@@ -656,10 +818,10 @@ namespace TPNote
             int test;
             if (int.TryParse(TxtTempsFeu.Text, out test))
             {
-                if (Convert.ToInt32(TxtTempsFeu.Text) < 5 || Convert.ToInt32(TxtTempsFeu.Text) > 120)
+                if (Convert.ToInt32(TxtTempsFeu.Text) < 5 || Convert.ToInt32(TxtTempsFeu.Text) > 30)
                 {
                     TxtTempsFeu.Text = tempsFeu.ToString();
-                    MessageBox.Show("Veuillez saisir une valeur entre 5 et 120", "Attention !", MessageBoxButton.OK,
+                    MessageBox.Show("Veuillez saisir une valeur entre 5 et 30", "Attention !", MessageBoxButton.OK,
                         MessageBoxImage.Error);
                 }
                 else
@@ -675,7 +837,7 @@ namespace TPNote
             else
             {
                 TxtTempsFeu.Text = tempsFeu.ToString();
-                MessageBox.Show("Veuillez saisir une valeur entre 10 et 120", "Attention !", MessageBoxButton.OK,
+                MessageBox.Show("Veuillez saisir une valeur entre 5 et 30", "Attention !", MessageBoxButton.OK,
     MessageBoxImage.Error);
             }
         }

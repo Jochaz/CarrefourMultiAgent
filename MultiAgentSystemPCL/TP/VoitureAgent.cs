@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel.Channels;
 using System.Text;
+using System.Windows.Shapes;
 
 
 namespace MultiAgentSystemPCL.TP
@@ -9,6 +11,7 @@ namespace MultiAgentSystemPCL.TP
 
     public class VoitureAgent
     {
+        public int Clignote { get; set; }
         public int IndexCouleurvoiture { get; set; }
 
         // ;) ;) ;)
@@ -101,7 +104,7 @@ namespace MultiAgentSystemPCL.TP
             IndexCouleurvoiture = randomGenerator.Next(3);
             coordonneesApparition = getApparition(apparition);
             direction = rdmDirection();
-
+            Clignote = randomGenerator.Next(2);
             if (apparitionToString() == "bot" || apparitionToString() == "top")
             {
                 width = 15;
@@ -172,7 +175,7 @@ namespace MultiAgentSystemPCL.TP
         {
             int value;
             Random randomGenerator = new Random();
-            value = randomGenerator.Next(6);
+            value = randomGenerator.Next(5);
 
 
             while (value + 1 == coordonneesApparition[2])
@@ -184,7 +187,7 @@ namespace MultiAgentSystemPCL.TP
 
             if (apparitionToString() == "left")
             {
-                if (value == 0 || value == 5)
+                if (value == 0)
                 {
                     direction = "top";
                 }
@@ -200,7 +203,7 @@ namespace MultiAgentSystemPCL.TP
             }
             else if (apparitionToString() == "right")
             {
-                if (value == 0 || value == 5)
+                if (value == 0)
                 {
                     direction = "bot";
                 }
@@ -215,7 +218,7 @@ namespace MultiAgentSystemPCL.TP
             }
             else if (apparitionToString() == "top")
             {
-                if (value == 0 || value == 5)
+                if (value == 0)
                 {
                     direction = "right";
                 }
@@ -230,7 +233,7 @@ namespace MultiAgentSystemPCL.TP
             }
             else if (apparitionToString() == "bot")
             {
-                if (value == 0 || value == 5)
+                if (value == 0)
                 {
                     direction = "left";
                 }
