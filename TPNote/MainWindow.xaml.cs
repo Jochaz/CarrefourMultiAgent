@@ -355,13 +355,13 @@ namespace TPNote
                     //fonctionnel !!  if (!uneVoiture.Turned && !uneVoiture.Stopped)
 
                     
-                    if (voiture.apparitionToString() == "left" && voiture.Direction == "top" && uneVoiture.apparitionToString() == "right" && voiture.timeToTurn() && distance < 50 && distance > 0 && feuD.Fill == Brushes.GreenYellow)
+                    if (voiture.apparitionToString() == "left" && voiture.Direction == "top" && uneVoiture.apparitionToString() == "right" && voiture.timeToTurn() && distance < 90 && distance > 0 && feuD.Fill == Brushes.GreenYellow)
                             return true;
-                    if (voiture.apparitionToString() == "right" && voiture.Direction == "bot" && uneVoiture.apparitionToString() == "left" && voiture.timeToTurn() && distance < 50 && distance > 0 && feuG.Fill == Brushes.GreenYellow)
+                    if (voiture.apparitionToString() == "right" && voiture.Direction == "bot" && uneVoiture.apparitionToString() == "left" && voiture.timeToTurn() && distance < 90 && distance > 0 && feuG.Fill == Brushes.GreenYellow)
                             return true;
-                    if (voiture.apparitionToString() == "bot" && voiture.Direction == "left" && uneVoiture.apparitionToString() == "top" && voiture.timeToTurn() && distance < 50 && distance > 0 && feuH.Fill == Brushes.GreenYellow)
+                    if (voiture.apparitionToString() == "bot" && voiture.Direction == "left" && uneVoiture.apparitionToString() == "top" && voiture.timeToTurn() && distance < 90 && distance > 0 && feuH.Fill == Brushes.GreenYellow)
                             return true;
-                    if (voiture.apparitionToString() == "top" && voiture.Direction == "right" && uneVoiture.apparitionToString() == "bot" && voiture.timeToTurn() && distance < 50 && distance > 0 && feuB.Fill == Brushes.GreenYellow)
+                    if (voiture.apparitionToString() == "top" && voiture.Direction == "right" && uneVoiture.apparitionToString() == "bot" && voiture.timeToTurn() && distance < 90 && distance > 0 && feuB.Fill == Brushes.GreenYellow)
                             return true;
                     /*
                     if (voiture.apparitionToString() == "left" && voiture.Direction == "top" && uneVoiture.apparitionToString() == "right" && left == 370 && distance < 60 && distance > -40)
@@ -458,13 +458,13 @@ namespace TPNote
 
                     VoitureAgent voiture = voitureList[i];
 
-                    voiture.Freine = adapterVitesse(voiture);
+
                     if(secondeCanvas % voiture.Freine == 0){
                         string apparition = voiture.apparitionToString();
                         int left = voiture.CoordonneesApparition[0];
                         int top = voiture.CoordonneesApparition[1];
                         //on détermine si la voiture s'arrête ou non
-
+                        voiture.Freine = adapterVitesse(voiture);
                         if (!voiture.sortieDuCarrefour())
                             voiture.Stopped = isStopped(voiture);
                         else
@@ -478,49 +478,39 @@ namespace TPNote
                             //si la voiture n'a pas encore tournée
                             if (!voiture.Turned)
                             {
-
-
-                                if (apparition == "left" && (feuG.Fill == Brushes.Orange || feuG.Fill == Brushes.Red) && left <= 338 && left >= 238)
+                                if (apparition == "left" && (feuG.Fill == Brushes.Orange || feuG.Fill == Brushes.Red) && left <= 340 && left >= 238)
                                 {
 
                                     if (left >= 318)
                                         voiture.Freine = 3;
                                     else
-                                        voiture.Freine = 2;
+                                       voiture.Freine = 2;
                                 }
-                                else
-                                    voiture.Freine = 1;
 
 
-                                if (apparition == "right" && (feuD.Fill == Brushes.Orange || feuD.Fill == Brushes.Red) && left >= 484 && left <= 584)
+                                else if (apparition == "right" && (feuD.Fill == Brushes.Orange || feuD.Fill == Brushes.Red) && left >= 484 && left <= 584)
                                 {
                                     if (left <= 504)
                                         voiture.Freine = 3;
                                     else
                                         voiture.Freine = 2;
                                 }
-                                else
-                                    voiture.Freine = 1;
 
-                                if (apparition == "bot" && (feuB.Fill == Brushes.Orange || feuB.Fill == Brushes.Red) && top >= 490 && top <= 590)
+                                else if (apparition == "bot" && (feuB.Fill == Brushes.Orange || feuB.Fill == Brushes.Red) && top >= 490 && top <= 590)
                                 {
                                     if (top <= 510)
                                         voiture.Freine = 3;
                                     else
                                         voiture.Freine = 2;
                                 }
-                                else
-                                    voiture.Freine = 1;
 
-                                if (apparition == "top" && (feuH.Fill == Brushes.Orange || feuH.Fill == Brushes.Red) && top <= 348 && top >= 248)
+                                else if (apparition == "top" && (feuH.Fill == Brushes.Orange || feuH.Fill == Brushes.Red) && top <= 348 && top >= 248)
                                 {
                                     if (top >= 318)
                                         voiture.Freine = 3;
                                     else
                                         voiture.Freine = 2;
-                                }
-                                else
-                                    voiture.Freine = 1;
+                                }                                   
 
                                 // on détermine dans quel sens on fait avancer la voiture
                                 if (apparition == "top")
@@ -613,7 +603,7 @@ namespace TPNote
 
         private void RdbDense_Checked(object sender, RoutedEventArgs e)
         {
-            circulation = 60;
+            circulation = 50;
         }
 
         private void RdbModeree_Checked(object sender, RoutedEventArgs e)
