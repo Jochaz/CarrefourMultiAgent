@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,7 +14,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using MultiAgentSystemPCL.TP;
 
 namespace TPNote
 {
@@ -140,7 +140,8 @@ namespace TPNote
             InitialisationListeCouleur();
             voitureList = new List<VoitureAgent>();
             ImageBrush ib = new ImageBrush();
-            ib.ImageSource = new BitmapImage(new Uri(@"..\..\Img\route.png", UriKind.Relative));
+            ib.ImageSource = new BitmapImage(new Uri(@"route.png", UriKind.Relative));
+
             routeCanvas.Background = ib;
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += dispatcherTimer_Tick;
